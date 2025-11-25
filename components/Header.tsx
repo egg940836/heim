@@ -70,7 +70,7 @@ export const Header: React.FC<HeaderProps> = ({
     <>
       {/* ================= ANNOUNCEMENT BAR (HeimOS 3.0) ================= */}
       {hasAnnouncement && (
-          <div className="fixed top-0 left-0 right-0 z-[51] min-h-[32px] py-1 flex items-center justify-center text-white text-xs font-bold tracking-wider px-4 text-center break-words" 
+          <div className="sticky top-0 left-0 right-0 z-[51] min-h-[32px] py-1 flex items-center justify-center text-white text-xs font-bold tracking-wider px-4 text-center break-words" 
                style={{ backgroundColor: siteSettings.announcementColor }}>
               <Icons.Megaphone className="w-4 h-4 mr-2 flex-shrink-0" />
               <span>{siteSettings.announcementText}</span>
@@ -78,10 +78,20 @@ export const Header: React.FC<HeaderProps> = ({
       )}
 
       {/* ================= DESKTOP HEADER (Sticky) ================= */}
-      {/* Added top-0 sticky to ensure it sticks to top. top-8 accounts for announcement bar roughly if present, but sticky logic works best with direct offset or just top-0 if bar pushes it down in flow.
-          Since announcement is fixed, we need to push header down.
+      {/* 
+          Fix: Removed 'mt-8' logic for announcement bar. 
+          Since Announcement is now sticky top-0, Header should just be sticky top-0 (or top-8 if bar present) 
+          BUT simpler to let natural flow handle it if both are sticky.
+          However, `top-0` with multiple sticky elements stack. 
+          Let's simplify: Announcement is sticky top-0. Header is sticky top-0 (will stick below announcement if in flow? No, they overlap if same top).
+          Actually, better approach: Announcement is Part of the sticky cluster or just let Header handle its own top offset dynamically if possible, 
+          OR just let them stack naturally if they are in a flex col container? No, MainLayout is flex-col.
+          If both are sticky, second one needs `top: [height of first]`.
+          To avoid JS calculation, let's make Announcement NOT sticky but normal flow, and Header Sticky top-0. 
+          Wait, user wants announcement always visible? Usually yes.
+          Let's try: Announcement FIXED at top. Header Sticky at top-8 (approx 32px).
       */}
-      <header className={`hidden lg:block sticky ${hasAnnouncement ? 'top-8' : 'top-0'} z-50 px-4 md:px-8 transition-all duration-300 pt-4 ${hasAnnouncement ? 'mt-8' : ''}`}>
+      <header className={`hidden lg:block sticky z-50 px-4 md:px-8 transition-all duration-300 pt-4 ${hasAnnouncement ? 'top-8' : 'top-0'}`}>
         <div className="max-w-7xl mx-auto bg-ac-cream/90 backdrop-blur-md rounded-[2rem] shadow-[0_8px_0_rgba(0,0,0,0.1)] border-4 border-white flex items-center justify-between py-3 px-6 transition-all duration-300">
           
           {/* Left: Time & Passport */}
@@ -164,7 +174,7 @@ export const Header: React.FC<HeaderProps> = ({
       </header>
 
       {/* ================= MOBILE TOP BAR (Visible on Mobile & Tablet) ================= */}
-      <header className={`lg:hidden sticky top-0 z-50 bg-ac-cream/95 backdrop-blur-sm px-4 py-2 flex justify-between items-center h-16 transition-all duration-300 ${hasAnnouncement ? 'mt-8 border-transparent shadow-none' : 'border-b-4 border-white shadow-sm'}`}>
+      <header className={`lg:hidden sticky top-0 z-50 bg-ac-cream/95 backdrop-blur-sm px-4 py-2 flex justify-between items-center h-16 transition-all duration-300 ${hasAnnouncement ? 'top-8' : 'top-0'} border-b-4 border-white shadow-sm`}>
           {/* Left: Logo */}
           <div 
             className="flex items-center cursor-pointer select-none"
