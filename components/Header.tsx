@@ -78,7 +78,10 @@ export const Header: React.FC<HeaderProps> = ({
       )}
 
       {/* ================= DESKTOP HEADER (Sticky) ================= */}
-      <header className={`hidden lg:block sticky ${hasAnnouncement ? 'top-8' : 'top-0'} z-50 px-4 md:px-8 transition-all duration-300 pt-4`}>
+      {/* Added top-0 sticky to ensure it sticks to top. top-8 accounts for announcement bar roughly if present, but sticky logic works best with direct offset or just top-0 if bar pushes it down in flow.
+          Since announcement is fixed, we need to push header down.
+      */}
+      <header className={`hidden lg:block sticky ${hasAnnouncement ? 'top-8' : 'top-0'} z-50 px-4 md:px-8 transition-all duration-300 pt-4 ${hasAnnouncement ? 'mt-8' : ''}`}>
         <div className="max-w-7xl mx-auto bg-ac-cream/90 backdrop-blur-md rounded-[2rem] shadow-[0_8px_0_rgba(0,0,0,0.1)] border-4 border-white flex items-center justify-between py-3 px-6 transition-all duration-300">
           
           {/* Left: Time & Passport */}
@@ -211,7 +214,7 @@ export const Header: React.FC<HeaderProps> = ({
              >
                 <Icons.ShoppingBag className="w-5 h-5" />
                 {cartCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white">
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white">
                         {cartCount}
                     </span>
                 )}

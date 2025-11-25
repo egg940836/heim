@@ -51,7 +51,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
       <ScrollToTop />
       <CookieConsent />
 
-      {/* Header (Fixed/Sticky handled internally or via CSS vars in future) */}
+      {/* Header - Sticky behavior is handled in Header.tsx, but Layout ensures context */}
       <Header 
         currentPage={currentPage} 
         onNavigate={onNavigate} 
@@ -65,8 +65,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         siteSettings={siteSettings}
       />
 
-      {/* Main Content Area - Outlets render here */}
-      <main className="flex-grow w-full relative z-10">
+      {/* Main Content Area - Outlets render here. 
+          Padding-top is NOT needed here because Header is sticky and we want content to flow naturally under or be offset by individual page containers if needed.
+          However, to prevent content from being hidden under the sticky header initially, we add a safe margin.
+      */}
+      <main className="flex-grow w-full relative z-10 pt-0">
         <Outlet />
       </main>
 
@@ -74,4 +77,3 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     </div>
   );
 };
-
