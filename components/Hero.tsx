@@ -1,4 +1,3 @@
-
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { AIImage } from './AIImage';
 import { Icons } from './Icons';
@@ -45,7 +44,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartCustomizing, onAskAi, siteSet
   }, []);
 
   return (
-    <section className="relative w-full min-h-[100dvh] lg:h-screen flex flex-col justify-center overflow-hidden pt-36 pb-24 lg:pt-32 lg:pb-0 px-4 bg-ac-cream/50">
+    <section className="relative w-full min-h-[100dvh] lg:h-screen flex flex-col justify-center overflow-hidden pt-24 lg:pt-32 lg:pb-0 px-4 bg-ac-cream/50">
       
       {/* Decorative Background Blobs (Desktop Only) */}
       <div className="hidden lg:block absolute top-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-ac-blue/10 rounded-full blur-3xl"></div>
