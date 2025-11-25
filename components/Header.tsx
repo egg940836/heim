@@ -54,7 +54,7 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'shop', label: '商店', icon: <Icons.BellBag className="w-6 h-6"/> },
     { id: 'builder', label: '工坊', icon: <Icons.Workbench className="w-6 h-6"/> },
     { id: 'blog', label: '日誌', icon: <Icons.Dodo className="w-6 h-6"/> },
-    { id: 'store', label: '服務', icon: <Icons.NookPhone className="w-6 h-6"/> },
+    { id: 'service', label: '服務', icon: <Icons.NookPhone className="w-6 h-6"/> },
   ];
 
   const formatTime = (date: Date) => {
