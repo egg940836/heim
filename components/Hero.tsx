@@ -44,11 +44,10 @@ export const Hero: React.FC<HeroProps> = ({ onStartCustomizing, onAskAi, siteSet
   }, []);
 
   return (
-    // Explicitly remove top padding and add a negative margin to pull it up under the sticky header visual space if needed, 
-    // BUT since header is sticky, we actually want it to start flow immediately.
-    // The previous issue was double padding. Now let's ensure it's compact.
-    // changing py-10 to pt-0 pb-10 to remove top gap entirely.
-    <section className="relative w-full min-h-[calc(100vh-80px)] flex flex-col justify-center overflow-hidden pt-0 pb-10 px-4 bg-ac-cream/50">
+    // Completely removed top padding (pt-0) and reduced bottom padding.
+    // Since Header is sticky, we rely on natural flow.
+    // Added 'min-h-screen' but subtracted roughly header height to avoid scrollbar if not needed initially.
+    <section className="relative w-full min-h-[calc(100vh-80px)] flex flex-col justify-center overflow-hidden pt-0 pb-8 px-4 bg-ac-cream/50">
       
       {/* Decorative Background Blobs (Desktop Only) */}
       <div className="hidden lg:block absolute top-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-ac-blue/10 rounded-full blur-3xl"></div>
@@ -57,7 +56,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartCustomizing, onAskAi, siteSet
       <div className="relative z-10 max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
         
         {/* Text Content - Order 1 on mobile */}
-        <div className="text-center lg:text-left space-y-5 md:space-y-8 order-1 flex flex-col items-center lg:items-start">
+        <div className="text-center lg:text-left space-y-5 md:space-y-8 order-1 flex flex-col items-center lg:items-start mt-4 lg:mt-0">
           
           {/* Top Badge - Time Aware Greeting */}
           <div className="inline-flex items-center bg-white border-2 border-ac-blue rounded-full px-3 py-1 text-xs md:text-sm font-bold text-ac-blue tracking-wider shadow-sm animate-fade-in-up">
