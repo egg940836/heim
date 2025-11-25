@@ -44,18 +44,22 @@ export const Hero: React.FC<HeroProps> = ({ onStartCustomizing, onAskAi, siteSet
   }, []);
 
   return (
-    // The issue: min-h-[calc(100vh-80px)] with sticky header creates a visual gap if the content inside is centered but pushed down by flex-center.
-    // The sticky header takes up space in the viewport visually but is in the flow.
-    // To fix the gap on desktop, we need to ensure the Hero section pulls content up or uses full height minus header effectively.
-    // Reverting to a clean full-height flex container that respects the sticky header naturally.
-    // Removing padding-bottom 8 to allow centering to be true center.
-    <section className="relative w-full min-h-[calc(100vh-80px)] flex flex-col lg:flex-row items-center justify-center overflow-hidden px-4 lg:px-8 bg-ac-cream/50">
+    // Refined Layout:
+    // 1. Use flex-col for mobile, lg:grid for desktop (grid-cols-2) to ensure side-by-side alignment without flex-row quirks.
+    // 2. Removed min-h-[calc(...)] which might force vertical stretching/gaps if content is short. 
+    //    Instead use min-h-screen but allow it to be slightly less if needed, or stick to flex centering.
+    //    Actually, sticky header means we want content to start 'under' it but visually occupy the rest of the screen.
+    //    Let's try standard min-h-screen with pt-20 (to clear header) and flex centering.
+    //    Wait, user says "upper and lower gaps". This implies the container is too tall or has too much padding.
+    //    Let's use a simpler approach: h-auto for mobile, min-h-[calc(100vh-80px)] for desktop flex centering.
+    //    And REMOVE all vertical padding on the section itself, putting it on the inner container if needed.
+    <section className="relative w-full min-h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden px-4 lg:px-8 bg-ac-cream/50">
       
       {/* Decorative Background Blobs (Desktop Only) */}
       <div className="hidden lg:block absolute top-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-ac-blue/10 rounded-full blur-3xl"></div>
       <div className="hidden lg:block absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-ac-green/10 rounded-full blur-3xl"></div>
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center py-8 lg:py-0">
         
         {/* Text Content */}
         <div className="text-center lg:text-left space-y-5 md:space-y-8 order-1 flex flex-col items-center lg:items-start">
