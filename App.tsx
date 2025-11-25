@@ -1,8 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { Header, PageType } from './components/Header';
-import { Footer } from './components/Footer';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { PageType } from './components/Header';
 import { Hero } from './components/Hero';
 import { MattressBuilder } from './components/MattressBuilder';
 import { ServicePage } from './components/ServicePage';
@@ -16,16 +15,9 @@ import { PassportPage } from './components/PassportPage';
 import { LoginModal } from './components/LoginModal';
 import { PolicyPage, PolicyTab } from './components/PolicyPage';
 import { AIRecommendation, CartItem, UserProfile, SiteSettings } from './types';
-import { BackgroundMusic } from './components/BackgroundMusic';
-import { CursorEffects } from './components/CursorEffects';
-import { ScrollToTop } from './components/ScrollToTop';
-import { CloudTransition } from './components/CloudTransition';
-import { FloatingBalloon } from './components/FloatingBalloon';
-import { ParallaxBackground } from './components/ParallaxBackground';
-import { CookieConsent } from './components/CookieConsent';
 import { dataService } from './services/dataService';
-import { Icons } from './components/Icons';
 import { SEO } from './components/SEO';
+import { MainLayout } from './components/layouts/MainLayout';
 
 // Toast Component
 const Toast = ({ message, icon, visible, onClose }: { message: string, icon: React.ReactNode, visible: boolean, onClose: () => void }) => {
@@ -56,11 +48,11 @@ function App() {
   
   // Determine current page type from URL for Header active state
   const getPageType = (path: string): PageType => {
-      if (path === '/') return 'home';
+      if (path === '/' || path === '/home') return 'home';
       if (path.startsWith('/shop')) return 'shop';
       if (path.startsWith('/builder')) return 'builder';
       if (path.startsWith('/blog')) return 'blog';
-      if (path.startsWith('/service') || path.startsWith('/store')) return 'store';
+      if (path.startsWith('/service') || path.startsWith('/store')) return 'service'; // Changed from 'store' to match Header ID
       if (path.startsWith('/story')) return 'story';
       if (path.startsWith('/passport')) return 'passport';
       if (path.startsWith('/policy')) return 'policy';
@@ -69,7 +61,6 @@ function App() {
   };
 
   const currentPage = getPageType(location.pathname);
-  const isAdmin = location.pathname.startsWith('/admin');
 
   const [showAiModal, setShowAiModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -134,7 +125,8 @@ function App() {
           case 'shop': navigate('/shop'); break;
           case 'builder': navigate('/builder'); break;
           case 'blog': navigate('/blog'); break;
-          case 'store': navigate('/service'); break;
+          case 'store': navigate('/service'); break; // Mapping legacy store ID to service route
+          case 'service': navigate('/service'); break;
           case 'story': navigate('/story'); break;
           case 'admin': navigate('/admin'); break;
           case 'passport': navigate('/passport'); break;
@@ -215,28 +207,8 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-ac-cream font-sans text-ac-darkBrown selection:bg-ac-yellow overflow-x-hidden relative">
-      {/* Dynamic Parallax Background (Replaces static overlay) */}
-      <ParallaxBackground />
-      
-      {/* Default SEO (Organization Schema) applied on Home if not overridden */}
+    <>
       <SEO /> 
-
-      {/* Global Components - Hidden in Admin */}
-      {!isAdmin && (
-        <>
-          {/* Only show Full Transition on Initial App Launch at Home Page */}
-          <CloudTransition 
-            key={location.key} 
-            type={(isLaunch && location.pathname === '/') ? 'full' : 'light'} 
-          />
-          <BackgroundMusic isPlaying={isMusicPlaying} onToggle={handleToggleMusic} />
-          <FloatingBalloon siteSettings={siteSettings} />
-          <CursorEffects />
-          <ScrollToTop />
-          <CookieConsent />
-        </>
-      )}
       
       <Toast 
         visible={toast.visible} 
@@ -266,118 +238,113 @@ function App() {
       )}
 
       <Routes>
-          {/* Admin Route - No Header/Footer */}
-          <Route path="/admin" element={<AdminPage />} />
+          {/* Admin Routes */}
+          <Route path="/admin/*" element={<AdminPage />} />
 
-          {/* Main App Routes - With Header/Footer */}
-          <Route path="*" element={
-              <div className="relative z-10 flex flex-col min-h-screen">
-                  {userProfile && (
-                    <Header 
-                        currentPage={currentPage} 
-                        onNavigate={handleNavigate} 
-                        cartCount={cartItems.length}
-                        onOpenCart={() => setIsCartOpen(true)}
-                        userProfile={userProfile}
-                        isMusicPlaying={isMusicPlaying}
-                        onToggleMusic={handleToggleMusic}
-                        onOpenPassport={handleOpenPassport}
-                        onAskAi={() => setShowAiModal(true)}
-                        siteSettings={siteSettings}
+          {/* Main App Layout Routes */}
+          <Route element={
+            <MainLayout 
+                currentPage={currentPage}
+                onNavigate={handleNavigate}
+                cartCount={cartItems.length}
+                onOpenCart={() => setIsCartOpen(true)}
+                userProfile={userProfile || {name:'Guest',islandName:'Heim',title:'',avatar:'😊',miles:0,unlockedStamps:[],lastCheckIn:''}}
+                isMusicPlaying={isMusicPlaying}
+                onToggleMusic={handleToggleMusic}
+                onOpenPassport={handleOpenPassport}
+                onAskAi={() => setShowAiModal(true)}
+                siteSettings={siteSettings}
+                onOpenPolicy={handleOpenPolicy}
+                isLaunch={isLaunch}
+            />
+          }>
+              <Route path="/" element={
+                  <>
+                    <Hero 
+                      onStartCustomizing={() => navigate('/builder')} 
+                      onAskAi={() => setShowAiModal(true)}
+                      siteSettings={siteSettings}
                     />
-                  )}
-
-                  <main className="flex-grow transition-all duration-300">
-                      <Routes>
-                          <Route path="/" element={
-                              <>
-                                <Hero 
-                                  onStartCustomizing={() => navigate('/builder')} 
-                                  onAskAi={() => setShowAiModal(true)}
-                                  siteSettings={siteSettings}
-                                />
-                                <section className="py-12 px-6">
-                                   <div className="max-w-4xl mx-auto bg-ac-orange rounded-[3rem] p-8 md:p-12 text-center text-white shadow-[0_10px_0_#d68c55] relative overflow-hidden">
-                                      <div className="relative z-10">
-                                          <h2 className="text-3xl md:text-4xl font-black mb-4 leading-tight">
-                                            現在就加入
-                                            <br className="md:hidden" />
-                                            無人島移居計畫！
-                                          </h2>
-                                          <p className="mb-8 text-lg font-medium opacity-90">首購還贈送「限定版葉子圖案枕頭」DIY 方程式喔！</p>
-                                          <button 
-                                            onClick={() => navigate('/builder')}
-                                            className="bg-white text-ac-orange px-8 py-4 rounded-full font-black text-xl shadow-lg hover:scale-105 transition-transform"
-                                          >
-                                            立刻出發
-                                          </button>
-                                      </div>
-                                      <div className="absolute -right-10 -bottom-20 w-64 h-64 bg-white/20 rounded-full"></div>
-                                      <div className="absolute -left-10 -top-20 w-64 h-64 bg-white/20 rounded-full"></div>
-                                   </div>
-                                </section>
-                              </>
-                          } />
-                          <Route path="/builder" element={
-                              <div className="animate-fade-in-up">
-                                <MattressBuilder 
-                                  onOpenAiModal={() => setShowAiModal(true)}
-                                  aiConfig={aiRecommendation}
-                                  onConfigApplied={handleConfigApplied}
-                                  onAddToCart={addToCart}
-                                  onUnlockAchievement={handleUnlockAchievement}
-                                />
-                              </div>
-                          } />
-                          <Route path="/shop" element={
-                              <div className="animate-fade-in-up">
-                                <ProductShop 
-                                    onAddToCart={addToCart} 
-                                    onUnlockAchievement={handleUnlockAchievement}
-                                />
-                              </div>
-                          } />
-                          <Route path="/blog" element={
-                              <div className="animate-fade-in-up">
-                                <BlogPage 
-                                    onNavigate={handleNavigate} 
-                                    onUnlockAchievement={handleUnlockAchievement}
-                                />
-                              </div>
-                          } />
-                          <Route path="/passport" element={
-                              userProfile && (
-                                <div className="animate-fade-in-up">
-                                    <SEO title="島民護照" description="查看您的海姆島護照、累積哩數與解鎖成就。" />
-                                    <PassportPage 
-                                        userProfile={userProfile}
-                                        onUpdateProfile={handleUpdateProfile}
-                                    />
-                                </div>
-                              )
-                          } />
-                          <Route path="/policy" element={
-                              <div className="animate-fade-in-up">
-                                <SEO title="服務條款與隱私權" description="海姆名床的服務條款、隱私權政策與退換貨說明。" />
-                                <PolicyPage activeTab={policyTab} onTabChange={setPolicyTab} />
-                              </div>
-                          } />
-                          <Route path="/service" element={<div className="animate-fade-in-up"><ServicePage siteSettings={siteSettings} /></div>} />
-                          <Route path="/store" element={<div className="animate-fade-in-up"><ServicePage siteSettings={siteSettings} /></div>} />
-                          <Route path="/story" element={
-                              <div className="animate-fade-in-up">
-                                  <SEO title="品牌故事" description="關於海姆名床的起源，以及哈姆店長在無人島的睡眠方程式。" />
-                                  <BrandStory siteSettings={siteSettings} />
-                              </div>
-                          } />
-                      </Routes>
-                  </main>
-
-                  <Footer onNavigate={handleNavigate} onOpenPolicy={handleOpenPolicy} isMusicPlaying={isMusicPlaying} />
-              </div>
-          } />
+                    <section className="py-12 px-6">
+                       <div className="max-w-4xl mx-auto bg-ac-orange rounded-[3rem] p-8 md:p-12 text-center text-white shadow-[0_10px_0_#d68c55] relative overflow-hidden">
+                          <div className="relative z-10">
+                              <h2 className="text-3xl md:text-4xl font-black mb-4 leading-tight">
+                                現在就加入
+                                <br className="md:hidden" />
+                                無人島移居計畫！
+                              </h2>
+                              <p className="mb-8 text-lg font-medium opacity-90">首購還贈送「限定版葉子圖案枕頭」DIY 方程式喔！</p>
+                              <button 
+                                onClick={() => navigate('/builder')}
+                                className="bg-white text-ac-orange px-8 py-4 rounded-full font-black text-xl shadow-lg hover:scale-105 transition-transform"
+                              >
+                                立刻出發
+                              </button>
+                          </div>
+                          <div className="absolute -right-10 -bottom-20 w-64 h-64 bg-white/20 rounded-full"></div>
+                          <div className="absolute -left-10 -top-20 w-64 h-64 bg-white/20 rounded-full"></div>
+                       </div>
+                    </section>
+                  </>
+              } />
+              <Route path="/builder" element={
+                  <div className="animate-fade-in-up pt-20 lg:pt-24">
+                    <MattressBuilder 
+                      onOpenAiModal={() => setShowAiModal(true)}
+                      aiConfig={aiRecommendation}
+                      onConfigApplied={handleConfigApplied}
+                      onAddToCart={addToCart}
+                      onUnlockAchievement={handleUnlockAchievement}
+                    />
+                  </div>
+              } />
+              <Route path="/shop" element={
+                  <div className="animate-fade-in-up pt-20 lg:pt-24">
+                    <ProductShop 
+                        onAddToCart={addToCart} 
+                        onUnlockAchievement={handleUnlockAchievement}
+                    />
+                  </div>
+              } />
+              <Route path="/blog" element={
+                  <div className="animate-fade-in-up pt-20 lg:pt-24">
+                    <BlogPage 
+                        onNavigate={handleNavigate} 
+                        onUnlockAchievement={handleUnlockAchievement}
+                    />
+                  </div>
+              } />
+              <Route path="/passport" element={
+                  userProfile ? (
+                    <div className="animate-fade-in-up pt-20 lg:pt-24">
+                        <SEO title="島民護照" description="查看您的海姆島護照、累積哩數與解鎖成就。" />
+                        <PassportPage 
+                            userProfile={userProfile}
+                            onUpdateProfile={handleUpdateProfile}
+                        />
+                    </div>
+                  ) : <Navigate to="/" />
+              } />
+              <Route path="/policy" element={
+                  <div className="animate-fade-in-up pt-20 lg:pt-24">
+                    <SEO title="服務條款與隱私權" description="海姆名床的服務條款、隱私權政策與退換貨說明。" />
+                    <PolicyPage activeTab={policyTab} onTabChange={setPolicyTab} />
+                  </div>
+              } />
+              <Route path="/service" element={<div className="animate-fade-in-up pt-20 lg:pt-24"><ServicePage siteSettings={siteSettings} /></div>} />
+              <Route path="/store" element={<div className="animate-fade-in-up pt-20 lg:pt-24"><ServicePage siteSettings={siteSettings} /></div>} />
+              <Route path="/story" element={
+                  <div className="animate-fade-in-up pt-20 lg:pt-24">
+                      <SEO title="品牌故事" description="關於海姆名床的起源，以及哈姆店長在無人島的睡眠方程式。" />
+                      <BrandStory siteSettings={siteSettings} />
+                  </div>
+              } />
+              
+              {/* Catch all */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
       </Routes>
-    </div>
+    </>
   );
 }
 

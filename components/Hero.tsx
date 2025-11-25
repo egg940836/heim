@@ -44,7 +44,8 @@ export const Hero: React.FC<HeroProps> = ({ onStartCustomizing, onAskAi, siteSet
   }, []);
 
   return (
-    <section className="relative w-full min-h-[100dvh] lg:h-screen flex flex-col justify-center overflow-hidden pt-8 lg:pt-12 pb-10 px-4 bg-ac-cream/50">
+    // Clean padding-top as Header is now sticky/handled by Layout
+    <section className="relative w-full min-h-[calc(100vh-80px)] flex flex-col justify-center overflow-hidden py-10 px-4 bg-ac-cream/50">
       
       {/* Decorative Background Blobs (Desktop Only) */}
       <div className="hidden lg:block absolute top-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-ac-blue/10 rounded-full blur-3xl"></div>

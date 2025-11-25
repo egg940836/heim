@@ -4,7 +4,7 @@ import { STORE_INFO } from '../constants';
 import { Icons } from './Icons';
 import { UserProfile, SiteSettings } from '../types';
 
-export type PageType = 'home' | 'builder' | 'story' | 'store' | 'shop' | 'blog' | 'admin' | 'passport' | 'policy';
+export type PageType = 'home' | 'builder' | 'story' | 'service' | 'shop' | 'blog' | 'admin' | 'passport' | 'policy';
 
 interface HeaderProps {
   onNavigate: (page: PageType) => void;
@@ -43,7 +43,6 @@ export const Header: React.FC<HeaderProps> = ({
       setLogoInteraction(true);
       setTimeout(() => setLogoInteraction(false), 1000);
       
-      // Small delay for visual effect before nav if needed, or just nav immediately
       if (currentPage !== 'home') {
           setTimeout(() => onNavigate('home'), 300);
       }
@@ -71,16 +70,16 @@ export const Header: React.FC<HeaderProps> = ({
     <>
       {/* ================= ANNOUNCEMENT BAR (HeimOS 3.0) ================= */}
       {hasAnnouncement && (
-          <div className="hidden lg:flex fixed top-0 left-0 right-0 z-[51] min-h-[32px] py-1 items-center justify-center text-white text-xs font-bold tracking-wider px-4 text-center break-words" 
+          <div className="fixed top-0 left-0 right-0 z-[51] min-h-[32px] py-1 flex items-center justify-center text-white text-xs font-bold tracking-wider px-4 text-center break-words" 
                style={{ backgroundColor: siteSettings.announcementColor }}>
               <Icons.Megaphone className="w-4 h-4 mr-2 flex-shrink-0" />
               <span>{siteSettings.announcementText}</span>
           </div>
       )}
 
-      {/* ================= DESKTOP HEADER (Pill Style) ================= */}
-      <header className={`hidden lg:block fixed ${hasAnnouncement ? 'top-12' : 'top-4'} left-0 right-0 z-50 px-4 md:px-8 pointer-events-none transition-all duration-300`}>
-        <div className="max-w-7xl mx-auto bg-ac-cream/90 backdrop-blur-md rounded-[2rem] shadow-[0_8px_0_rgba(0,0,0,0.1)] border-4 border-white pointer-events-auto flex items-center justify-between py-3 px-6 transition-all duration-300">
+      {/* ================= DESKTOP HEADER (Sticky) ================= */}
+      <header className={`hidden lg:block sticky ${hasAnnouncement ? 'top-8' : 'top-0'} z-50 px-4 md:px-8 transition-all duration-300 pt-4`}>
+        <div className="max-w-7xl mx-auto bg-ac-cream/90 backdrop-blur-md rounded-[2rem] shadow-[0_8px_0_rgba(0,0,0,0.1)] border-4 border-white flex items-center justify-between py-3 px-6 transition-all duration-300">
           
           {/* Left: Time & Passport */}
           <div className="flex items-center space-x-4">
@@ -162,7 +161,7 @@ export const Header: React.FC<HeaderProps> = ({
       </header>
 
       {/* ================= MOBILE TOP BAR (Visible on Mobile & Tablet) ================= */}
-      <header className={`lg:hidden fixed top-0 left-0 right-0 z-50 bg-ac-cream/95 backdrop-blur-sm px-4 py-2 flex justify-between items-center h-16 transition-all duration-300 ${hasAnnouncement ? 'border-transparent shadow-none' : 'border-b-4 border-white shadow-sm'}`}>
+      <header className={`lg:hidden sticky top-0 z-50 bg-ac-cream/95 backdrop-blur-sm px-4 py-2 flex justify-between items-center h-16 transition-all duration-300 ${hasAnnouncement ? 'mt-8 border-transparent shadow-none' : 'border-b-4 border-white shadow-sm'}`}>
           {/* Left: Logo */}
           <div 
             className="flex items-center cursor-pointer select-none"
@@ -219,14 +218,6 @@ export const Header: React.FC<HeaderProps> = ({
              </button>
           </div>
       </header>
-
-      {/* ================= MOBILE ANNOUNCEMENT (Below Header) ================= */}
-      {hasAnnouncement && (
-          <div className="lg:hidden fixed top-16 left-0 right-0 z-40 p-2 text-white text-center text-xs font-bold shadow-sm border-b-4 border-white" 
-               style={{ backgroundColor: siteSettings.announcementColor }}>
-              {siteSettings.announcementText}
-          </div>
-      )}
 
       {/* ================= MOBILE BOTTOM NAVIGATION ================= */}
       <nav 
