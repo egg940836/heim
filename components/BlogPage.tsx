@@ -84,6 +84,20 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onNavigate, onUnlockAchievem
   }, []);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const postId = params.get('post');
+    if (postId) setSelectedPostId(postId);
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (selectedPostId) params.set('post', selectedPostId);
+    else params.delete('post');
+    const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+    window.history.replaceState(null, '', newUrl);
+  }, [selectedPostId]);
+
+  useEffect(() => {
     if (selectedPostId) {
       window.scrollTo(0, 0);
     }

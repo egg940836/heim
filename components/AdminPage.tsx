@@ -261,6 +261,8 @@ export const AdminPage: React.FC = () => {
     e.preventDefault();
     if (password === 'hamu888') {
       setIsLoggedIn(true);
+      // Immediately fetch data after login
+      refreshData();
     } else {
       alert('密碼錯誤是也！');
     }

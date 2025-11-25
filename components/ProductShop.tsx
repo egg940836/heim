@@ -99,7 +99,25 @@ export const ProductShop: React.FC<ProductShopProps> = ({ onAddToCart, onUnlockA
   }, []);
 
   useEffect(() => {
-      if (selectedProduct?.variants && selectedProduct.variants.length > 0) {
+    // Sync URL param to state
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('product');
+    if (productId) {
+        setSelectedProductId(productId);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Sync state to URL
+    const params = new URLSearchParams(window.location.search);
+    if (selectedProductId) {
+        params.set('product', selectedProductId);
+    } else {
+        params.delete('product');
+    }
+    const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+    window.history.replaceState(null, '', newUrl);
+  }, [selectedProductId]);
           const defaultVariant = selectedProduct.variants.find(v => v.id === 'double') || selectedProduct.variants[0];
           setSelectedVariant(defaultVariant);
       } else {
