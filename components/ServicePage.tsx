@@ -95,7 +95,7 @@ export const ServicePage: React.FC<ServicePageProps> = ({ siteSettings }) => {
   };
 
   return (
-    <div className="min-h-screen pt-36 md:pt-40 lg:pt-40 pb-24 px-4 md:px-6 bg-[#F2F9F5]">
+    <div className="min-h-screen pb-24 px-4 md:px-6 bg-[#F2F9F5] pt-10">
       <SEO 
           title="島民服務中心"
           description="有關於運送、保固或床墊保養的問題嗎？這裡整理了常見問題集，讓哈姆為您解答。"

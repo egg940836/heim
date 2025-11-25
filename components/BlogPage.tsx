@@ -144,7 +144,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onNavigate, onUnlockAchievem
     };
 
     return (
-      <div className="min-h-screen pt-28 md:pt-32 lg:pt-40 px-4 md:px-6 pb-24 relative">
+      <div className="min-h-screen px-4 md:px-6 pb-24 relative pt-10">
         <SEO 
             title={selectedPost.title}
             description={selectedPost.excerpt}
@@ -252,7 +252,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onNavigate, onUnlockAchievem
 
   // ========== LIST VIEW ==========
   return (
-    <div className="min-h-screen pt-28 md:pt-32 lg:pt-40 px-4 md:px-6 pb-24 bg-[#F2F9F5]">
+    <div className="min-h-screen px-4 md:px-6 pb-24 bg-[#F2F9F5] pt-10">
       {listSEO}
       {/* Roost Coffee Interaction */}
       <TheRoostCoffee />

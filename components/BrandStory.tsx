@@ -9,7 +9,7 @@ interface BrandStoryProps {
 
 export const BrandStory: React.FC<BrandStoryProps> = ({ siteSettings }) => {
   return (
-    <div className="min-h-screen pt-28 md:pt-32 lg:pt-40 px-4 md:px-6 pb-24">
+    <div className="min-h-screen px-4 md:px-6 pb-24 pt-10">
       <div className="max-w-5xl mx-auto">
         
         <div className="text-center mb-10 md:mb-16">

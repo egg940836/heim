@@ -11,7 +11,7 @@ interface PolicyPageProps {
 
 export const PolicyPage: React.FC<PolicyPageProps> = ({ activeTab, onTabChange }) => {
   return (
-    <div className="min-h-screen pt-28 md:pt-36 px-4 pb-24 bg-[#5D4037]">
+    <div className="min-h-screen px-4 pb-24 bg-[#5D4037] pt-10">
       <div className="max-w-4xl mx-auto">
         
         {/* Clipboard Header */}

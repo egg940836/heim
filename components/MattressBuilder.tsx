@@ -458,7 +458,7 @@ export const MattressBuilder: React.FC<MattressBuilderProps> = ({ onOpenAiModal,
   }
 
   return (
-    <div className="min-h-screen pb-32 pt-32 lg:pt-40 relative">
+    <div className="min-h-screen pb-32 relative pt-10">
       <SEO 
         title="DIY 手作工坊"
         description="海姆島的床墊工坊，讓您自由組合表布、舒適層與獨立筒。軟硬自己拚、材料自己選，打造獨一無二的專屬床墊。"

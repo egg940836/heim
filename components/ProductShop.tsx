@@ -204,7 +204,7 @@ export const ProductShop: React.FC<ProductShopProps> = ({ onAddToCart, onUnlockA
       };
 
       return (
-          <div className="min-h-screen pt-28 md:pt-32 lg:pt-40 px-4 md:px-6 pb-24">
+          <div className="min-h-screen px-4 md:px-6 pb-24 pt-10">
               <SEO 
                   title={selectedProduct.seo?.title || selectedProduct.name}
                   description={selectedProduct.seo?.description || selectedProduct.description}
@@ -410,7 +410,7 @@ export const ProductShop: React.FC<ProductShopProps> = ({ onAddToCart, onUnlockA
 
   // ========== LIST VIEW ==========
   return (
-    <div className="min-h-screen pt-28 md:pt-32 lg:pt-40 px-4 md:px-6 pb-24">
+    <div className="min-h-screen px-4 md:px-6 pb-24 pt-10">
       {listSEO}
       {/* Money Rock Interaction */}
       <MoneyRock />

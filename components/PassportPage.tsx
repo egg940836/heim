@@ -100,7 +100,7 @@ export const PassportPage: React.FC<PassportPageProps> = ({ userProfile, onUpdat
     const avatars = ['😊', '🐹', '🐱', '🐶', '🐰', '🐻', '🦊', '🐨', '🐯', '🦁'];
 
     return (
-        <div className="min-h-screen pt-28 lg:pt-40 px-4 pb-24 bg-[#6D8C75] flex items-center justify-center perspective-[1000px]">
+        <div className="min-h-screen px-4 pb-24 bg-[#6D8C75] flex items-center justify-center perspective-[1000px] pt-10">
             <div 
                 ref={cardRef}
                 onMouseMove={handleMouseMove}
