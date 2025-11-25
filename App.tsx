@@ -332,7 +332,7 @@ function App() {
                   </div>
               } />
               <Route path="/service" element={<div className="animate-fade-in-up pt-20 lg:pt-24"><ServicePage siteSettings={siteSettings} /></div>} />
-              <Route path="/store" element={<div className="animate-fade-in-up pt-20 lg:pt-24"><ServicePage siteSettings={siteSettings} /></div>} />
+              <Route path="/store" element={<Navigate to="/service" replace />} />
               <Route path="/story" element={
                   <div className="animate-fade-in-up pt-20 lg:pt-24">
                       <SEO title="品牌故事" description="關於海姆名床的起源，以及哈姆店長在無人島的睡眠方程式。" />
