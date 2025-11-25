@@ -20,7 +20,11 @@ export const ServicePage: React.FC<ServicePageProps> = ({ siteSettings }) => {
   const [reward, setReward] = useState('');
 
   useEffect(() => {
-    setFaqs(dataService.getFAQs());
+    const loadFaqs = async () => {
+        const data = await dataService.getFAQs();
+        setFaqs(data);
+    };
+    loadFaqs();
   }, []);
 
   const toggleFaq = (index: number) => {

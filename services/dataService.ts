@@ -220,9 +220,16 @@ class DataService {
   async getMaterials(): Promise<Material[]> {
       try {
           const { data, error } = await supabase.from('materials').select('*');
-          if (error || !data || data.length === 0) return MATERIALS;
+          if (error) {
+              console.warn('Supabase error getting materials:', error);
+              return MATERIALS; // Fallback
+          }
+          if (!data || data.length === 0) return MATERIALS;
           return data; // Assume columns match interface or simple mapping
-      } catch { return MATERIALS; }
+      } catch (e) { 
+          console.warn('Error getting materials:', e);
+          return MATERIALS; 
+      }
   }
 
   async saveMaterial(material: Material): Promise<void> {
@@ -238,12 +245,19 @@ class DataService {
   async getSizes(): Promise<Size[]> {
       try {
           const { data, error } = await supabase.from('sizes').select('*');
-          if (error || !data || data.length === 0) return SIZES;
+          if (error) {
+              console.warn('Supabase error getting sizes:', error);
+              return SIZES; // Fallback
+          }
+          if (!data || data.length === 0) return SIZES;
           return data.map((s: any) => ({
               ...s,
               basePrice: s.base_price ?? s.basePrice // handle snake_case if DB uses it
           }));
-      } catch { return SIZES; }
+      } catch (e) { 
+          console.warn('Error getting sizes:', e);
+          return SIZES; 
+      }
   }
 
   async saveSize(size: Size): Promise<void> {
@@ -263,9 +277,16 @@ class DataService {
   async getFAQs(): Promise<FaqItem[]> {
       try {
           const { data, error } = await supabase.from('faqs').select('*');
-          if (error || !data || data.length === 0) return INITIAL_FAQS;
+          if (error) {
+              console.warn('Supabase error getting FAQs:', error);
+              return INITIAL_FAQS; // Fallback
+          }
+          if (!data || data.length === 0) return INITIAL_FAQS;
           return data;
-      } catch { return INITIAL_FAQS; }
+      } catch (e) { 
+          console.warn('Error getting FAQs:', e);
+          return INITIAL_FAQS; 
+      }
   }
 
   async saveFAQ(faq: FaqItem): Promise<void> {
