@@ -200,7 +200,7 @@ const StyleTransferTab = () => {
             setGeneratedImage(result);
         } catch (error) {
             console.error(error);
-            alert('轉換失敗，請稍後再試。');
+            alert('轉換失敗，請確認 API Key 或稍後再試。');
         } finally {
             setIsGenerating(false);
         }

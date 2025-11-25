@@ -161,12 +161,14 @@ class DataService {
           status: newOrder.status
       };
 
-      const { error } = await supabase.from('orders').insert(dbOrder);
-      if (error) {
-          console.error('Order creation failed in Supabase, saving locally as backup');
-          // Fallback to local storage or throw?
-          // For now throw to alert user
-          throw error;
+      try {
+          const { error } = await supabase.from('orders').insert(dbOrder);
+          if (error) {
+              throw error;
+          }
+      } catch (e) {
+          console.error('Order creation failed in Supabase, fallback not implemented to prevent data sync issues.', e);
+          throw e;
       }
       
       this.saveCart([]);
