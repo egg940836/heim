@@ -44,7 +44,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartCustomizing, onAskAi, siteSet
   }, []);
 
   return (
-    // Clean padding-top as Header is now sticky/handled by Layout
+    // Removed top padding completely because Header is Sticky and content naturally flows after it
     <section className="relative w-full min-h-[calc(100vh-80px)] flex flex-col justify-center overflow-hidden py-10 px-4 bg-ac-cream/50">
       
       {/* Decorative Background Blobs (Desktop Only) */}

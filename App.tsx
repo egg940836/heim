@@ -52,7 +52,7 @@ function App() {
       if (path.startsWith('/shop')) return 'shop';
       if (path.startsWith('/builder')) return 'builder';
       if (path.startsWith('/blog')) return 'blog';
-      if (path.startsWith('/service') || path.startsWith('/store')) return 'service'; // Changed from 'store' to match Header ID
+      if (path.startsWith('/service') || path.startsWith('/store')) return 'service'; 
       if (path.startsWith('/story')) return 'story';
       if (path.startsWith('/passport')) return 'passport';
       if (path.startsWith('/policy')) return 'policy';
@@ -125,7 +125,7 @@ function App() {
           case 'shop': navigate('/shop'); break;
           case 'builder': navigate('/builder'); break;
           case 'blog': navigate('/blog'); break;
-          case 'store': navigate('/service'); break; // Mapping legacy store ID to service route
+          case 'store': navigate('/service'); break; 
           case 'service': navigate('/service'); break;
           case 'story': navigate('/story'); break;
           case 'admin': navigate('/admin'); break;
@@ -287,8 +287,9 @@ function App() {
                     </section>
                   </>
               } />
+              {/* REMOVED pt-20 lg:pt-24 from all routes below to fix spacing issue */}
               <Route path="/builder" element={
-                  <div className="animate-fade-in-up pt-20 lg:pt-24">
+                  <div className="animate-fade-in-up">
                     <MattressBuilder 
                       onOpenAiModal={() => setShowAiModal(true)}
                       aiConfig={aiRecommendation}
@@ -299,7 +300,7 @@ function App() {
                   </div>
               } />
               <Route path="/shop" element={
-                  <div className="animate-fade-in-up pt-20 lg:pt-24">
+                  <div className="animate-fade-in-up">
                     <ProductShop 
                         onAddToCart={addToCart} 
                         onUnlockAchievement={handleUnlockAchievement}
@@ -307,7 +308,7 @@ function App() {
                   </div>
               } />
               <Route path="/blog" element={
-                  <div className="animate-fade-in-up pt-20 lg:pt-24">
+                  <div className="animate-fade-in-up">
                     <BlogPage 
                         onNavigate={handleNavigate} 
                         onUnlockAchievement={handleUnlockAchievement}
@@ -316,7 +317,7 @@ function App() {
               } />
               <Route path="/passport" element={
                   userProfile ? (
-                    <div className="animate-fade-in-up pt-20 lg:pt-24">
+                    <div className="animate-fade-in-up">
                         <SEO title="島民護照" description="查看您的海姆島護照、累積哩數與解鎖成就。" />
                         <PassportPage 
                             userProfile={userProfile}
@@ -326,15 +327,15 @@ function App() {
                   ) : <Navigate to="/" />
               } />
               <Route path="/policy" element={
-                  <div className="animate-fade-in-up pt-20 lg:pt-24">
+                  <div className="animate-fade-in-up">
                     <SEO title="服務條款與隱私權" description="海姆名床的服務條款、隱私權政策與退換貨說明。" />
                     <PolicyPage activeTab={policyTab} onTabChange={setPolicyTab} />
                   </div>
               } />
-              <Route path="/service" element={<div className="animate-fade-in-up pt-20 lg:pt-24"><ServicePage siteSettings={siteSettings} /></div>} />
+              <Route path="/service" element={<div className="animate-fade-in-up"><ServicePage siteSettings={siteSettings} /></div>} />
               <Route path="/store" element={<Navigate to="/service" replace />} />
               <Route path="/story" element={
-                  <div className="animate-fade-in-up pt-20 lg:pt-24">
+                  <div className="animate-fade-in-up">
                       <SEO title="品牌故事" description="關於海姆名床的起源，以及哈姆店長在無人島的睡眠方程式。" />
                       <BrandStory siteSettings={siteSettings} />
                   </div>
