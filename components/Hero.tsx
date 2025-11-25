@@ -44,8 +44,11 @@ export const Hero: React.FC<HeroProps> = ({ onStartCustomizing, onAskAi, siteSet
   }, []);
 
   return (
-    // Removed top padding completely because Header is Sticky and content naturally flows after it
-    <section className="relative w-full min-h-[calc(100vh-80px)] flex flex-col justify-center overflow-hidden py-10 px-4 bg-ac-cream/50">
+    // Explicitly remove top padding and add a negative margin to pull it up under the sticky header visual space if needed, 
+    // BUT since header is sticky, we actually want it to start flow immediately.
+    // The previous issue was double padding. Now let's ensure it's compact.
+    // changing py-10 to pt-0 pb-10 to remove top gap entirely.
+    <section className="relative w-full min-h-[calc(100vh-80px)] flex flex-col justify-center overflow-hidden pt-0 pb-10 px-4 bg-ac-cream/50">
       
       {/* Decorative Background Blobs (Desktop Only) */}
       <div className="hidden lg:block absolute top-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-ac-blue/10 rounded-full blur-3xl"></div>
