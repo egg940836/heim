@@ -44,21 +44,23 @@ export const Hero: React.FC<HeroProps> = ({ onStartCustomizing, onAskAi, siteSet
   }, []);
 
   return (
-    // Completely removed top padding (pt-0) and reduced bottom padding.
-    // Since Header is sticky, we rely on natural flow.
-    // Added 'min-h-screen' but subtracted roughly header height to avoid scrollbar if not needed initially.
-    <section className="relative w-full min-h-[calc(100vh-80px)] flex flex-col justify-center overflow-hidden pt-0 pb-8 px-4 bg-ac-cream/50">
+    // The issue: min-h-[calc(100vh-80px)] with sticky header creates a visual gap if the content inside is centered but pushed down by flex-center.
+    // The sticky header takes up space in the viewport visually but is in the flow.
+    // To fix the gap on desktop, we need to ensure the Hero section pulls content up or uses full height minus header effectively.
+    // Reverting to a clean full-height flex container that respects the sticky header naturally.
+    // Removing padding-bottom 8 to allow centering to be true center.
+    <section className="relative w-full min-h-[calc(100vh-80px)] flex flex-col lg:flex-row items-center justify-center overflow-hidden px-4 lg:px-8 bg-ac-cream/50">
       
       {/* Decorative Background Blobs (Desktop Only) */}
       <div className="hidden lg:block absolute top-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-ac-blue/10 rounded-full blur-3xl"></div>
       <div className="hidden lg:block absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-ac-green/10 rounded-full blur-3xl"></div>
 
-      <div className="relative z-10 max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
         
-        {/* Text Content - Order 1 on mobile */}
-        <div className="text-center lg:text-left space-y-5 md:space-y-8 order-1 flex flex-col items-center lg:items-start mt-4 lg:mt-0">
+        {/* Text Content */}
+        <div className="text-center lg:text-left space-y-5 md:space-y-8 order-1 flex flex-col items-center lg:items-start">
           
-          {/* Top Badge - Time Aware Greeting */}
+          {/* Top Badge */}
           <div className="inline-flex items-center bg-white border-2 border-ac-blue rounded-full px-3 py-1 text-xs md:text-sm font-bold text-ac-blue tracking-wider shadow-sm animate-fade-in-up">
              <Icons.Plane className="w-3 h-3 md:w-4 md:h-4 mr-1.5" />
              {greeting}
@@ -75,7 +77,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartCustomizing, onAskAi, siteSet
             </p>
           </div>
           
-          {/* Trust Badges - Compact for Mobile */}
+          {/* Trust Badges */}
           <div className="flex flex-wrap justify-center lg:justify-start gap-2 px-1 lg:px-0 max-w-md lg:max-w-none">
              {['🇹🇼 台灣職人手作', '🚚 專人運輸配送', '🛡️ 15 年保固'].map(tag => (
                  <span key={tag} className="bg-white/60 backdrop-blur px-2 py-1 rounded-lg text-[10px] md:text-sm font-bold text-ac-darkBrown border border-ac-cream/50">
@@ -84,7 +86,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartCustomizing, onAskAi, siteSet
              ))}
           </div>
 
-          {/* Buttons - Full width on mobile with proper spacing */}
+          {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2 w-full max-w-xs sm:max-w-md mx-auto lg:mx-0 lg:max-w-none">
             <button 
               onClick={onStartCustomizing}
@@ -103,9 +105,9 @@ export const Hero: React.FC<HeroProps> = ({ onStartCustomizing, onAskAi, siteSet
           </div>
         </div>
 
-        {/* 3D Visual (Exploded View) - Order 2 */}
-        <div className="relative group order-2 mt-2 lg:mt-0 px-8 lg:px-0 perspective-[1000px]">
-            <div className="relative w-full aspect-square max-w-[280px] md:max-w-md mx-auto lg:max-w-none">
+        {/* 3D Visual (Exploded View) */}
+        <div className="relative group order-2 mt-8 lg:mt-0 px-8 lg:px-0 perspective-[1000px] flex justify-center">
+            <div className="relative w-full aspect-square max-w-[280px] md:max-w-md lg:max-w-lg">
               {/* Image Card */}
               <div 
                   ref={cardRef}
@@ -129,7 +131,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartCustomizing, onAskAi, siteSet
                   </div>
               </div>
               
-              {/* Floating Tag - Counter animated */}
+              {/* Floating Tag */}
               <div 
                   style={{ 
                       transform: `translate(${tilt.y * 2}px, ${tilt.x * 2}px) rotate(12deg)`
