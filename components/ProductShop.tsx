@@ -118,6 +118,9 @@ export const ProductShop: React.FC<ProductShopProps> = ({ onAddToCart, onUnlockA
     const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
     window.history.replaceState(null, '', newUrl);
   }, [selectedProductId]);
+
+  useEffect(() => {
+      if (selectedProduct?.variants && selectedProduct.variants.length > 0) {
           const defaultVariant = selectedProduct.variants.find(v => v.id === 'double') || selectedProduct.variants[0];
           setSelectedVariant(defaultVariant);
       } else {
