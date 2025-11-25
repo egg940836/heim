@@ -1,0 +1,15 @@
+{
+  "name": "海姆名床 | Heim Mattress",
+  "short_name": "Heim",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F2F9F5",
+  "theme_color": "#FFFDF0",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

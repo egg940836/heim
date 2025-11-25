@@ -1,0 +1,176 @@
+海姆名床 (Heim Mattress) - 專案交接與佈署手冊
+版本： HeimOS 3.3 (Banana Pro Ready)
+日期： 2025/01
+目標環境： Vercel (Frontend/Edge) + Supabase (Database/Auth)
+1. 專案概述 (Project Overview)
+「海姆名床」是一個深度遊戲化 (Gamification) 的客製化床墊電商網站。設計靈感源自《集合啦！動物森友會》，旨在將枯燥的家具選購過程轉化為有趣的「無人島移居計畫」。
+核心價值
+沉浸式體驗：全站採用擬物化設計 (Skeuomorphic Design)、動態視差背景、音效互動與遊戲化成就系統。
+AI 驅動 (Gemini)：
+哈姆店長 (AI Consultant)：透過 RAG (Rule-based + AI) 分析用戶睡眠習慣，推薦床墊配置。
+AI SEO (GEO)：自動生成結構化資料 (JSON-LD) 與優化後的商品描述。
+風格轉換 (Banana Pro)：後台整合影像生成功能，將普通照片轉換為動森風格。
+完全客製化 (DIY)：前端即時渲染床墊分層結構（表布、舒適層、支撐層），並即時計算價格。
+2. 技術架構 (Architecture)
+前端技術堆疊
+Framework: React 19
+Build Tool: Vite (目前透過 Custom Loader 運行，遷移至 Vercel 建議使用標準 Vite 配置)
+Styling: Tailwind CSS (包含自定義動畫與動森配色系統)
+Routing: React Router DOM (HashRouter currently, recommend BrowserRouter for Vercel)
+AI Integration: Google GenAI SDK (@google/genai)
+SEO: React Helmet Async
+資料層 (目前 vs 目標)
+Current (Dev/Test): services/dataService.ts 使用 localStorage 模擬 CRUD，資料僅存在於使用者瀏覽器。
+Target (Production): Supabase (PostgreSQL) 用於儲存訂單、商品、部落格文章與會員資料。
+3. 目錄結構說明 (Directory Structure)
+code
+Code
+/
+├── components/         # UI 元件庫
+│   ├── Header.tsx      # 導覽列 (含動態時間、天氣)
+│   ├── MattressBuilder.tsx # 核心功能：床墊 DIY 工坊
+│   ├── AdminPage.tsx   # 後台管理系統 (CMS)
+│   ├── SEO.tsx         # SEO & JSON-LD 注入器
+│   └── ...
+├── services/
+│   ├── dataService.ts  # 資料存取層 (需重寫以串接 Supabase)
+│   ├── geminiService.ts# Google Gemini AI 串接邏輯
+│   └── recommendationLogic.ts # 睡眠推薦演算法
+├── types.ts            # TypeScript 型別定義 (Data Models)
+├── constants.ts        # 靜態資料 (預設商品、材質參數)
+├── App.tsx             # 主程式與路由配置
+└── index.tsx           # 進入點
+4. 環境變數設定 (Environment Variables)
+在 Vercel 部署時，請設定以下環境變數：
+變數名稱	描述	範例值
+API_KEY	Google Gemini API Key (必須支援付費專案以使用 Pro 模型)	AIzaSy...
+VITE_SUPABASE_URL	(生產環境需新增) Supabase 專案網址	https://xyz.supabase.co
+VITE_SUPABASE_ANON_KEY	(生產環境需新增) Supabase 公開金鑰	eyJhbG...
+5. 生產環境遷移指南 (Migration Guide: LocalStorage to Supabase)
+此章節是交接給後續工程師的關鍵。目前的 dataService.ts 是一個 Facade，您需要建立 Supabase 表格並修改 Service 層。
+步驟 A: Supabase 資料庫規劃 (SQL Schema)
+請在 Supabase SQL Editor 執行以下腳本以建立對應的表格：
+code
+SQL
+-- 1. Products (商品表)
+create table products (
+  id text primary key,
+  name text not null,
+  category text,
+  price integer,
+  description text,
+  full_description text,
+  image_prompt text,
+  uploaded_image text, -- Store Base64 or Storage URL
+  tags text[], -- Array of strings
+  features jsonb, -- JSON array
+  specs jsonb, -- JSON array
+  variants jsonb, -- JSON array
+  seo jsonb,
+  created_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+-- 2. Orders (訂單表)
+create table orders (
+  id text primary key,
+  customer_name text,
+  items jsonb not null, -- Store cart items snapshot
+  total_amount integer,
+  status text default 'PENDING',
+  created_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+-- 3. Blog Posts (部落格)
+create table blog_posts (
+  id text primary key,
+  title text,
+  excerpt text,
+  content text, -- HTML content
+  category text,
+  author text,
+  date date,
+  tags text[],
+  image_prompt text,
+  created_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+-- 4. User Profiles (會員資料 - 可與 Supabase Auth 整合)
+create table profiles (
+  id uuid references auth.users on delete cascade,
+  name text,
+  island_name text,
+  title text,
+  miles integer default 0,
+  unlocked_stamps text[],
+  last_check_in date,
+  primary key (id)
+);
+步驟 B: 修改 services/dataService.ts
+請將原本讀寫 localStorage 的邏輯，改為呼叫 Supabase Client。
+範例代碼 (虛擬碼)：
+code
+TypeScript
+// 安裝: npm install @supabase/supabase-js
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
+
+class DataService {
+  // 範例：取得商品
+  async getProducts(): Promise<Product[]> {
+    const { data, error } = await supabase.from('products').select('*');
+    if (error) throw error;
+    return data as Product[]; // 需做欄位映射處理 (snake_case to camelCase)
+  }
+
+  // 範例：建立訂單
+  async createOrder(items: CartItem[], totalAmount: number): Promise<Order> {
+    const newOrder = {
+        customer_name: 'Guest', // 或從 Auth 取得
+        items: items,
+        total_amount: totalAmount,
+        status: 'PENDING'
+    };
+    const { data, error } = await supabase.from('orders').insert(newOrder).select();
+    return data[0];
+  }
+  
+  // ... 其他方法 (getBlogPosts, saveUserProfile 等) 依此類推
+}
+步驟 C: 圖片儲存策略 (Storage Strategy)
+目前的應用使用 Base64 字串儲存圖片 (為了方便 Demo)。
+生產環境建議：
+在 Supabase 啟用 Storage 功能，建立一個 public bucket (例如 heim-assets)。
+在 AdminPage.tsx 上傳圖片時，將檔案上傳至 Supabase Storage，並取得公開 URL。
+將 URL 存入 Database，而非 Base64 字串，以優化載入效能。
+6. 部署至 Vercel (Deployment)
+準備 Repository：將包含 package.json, vite.config.ts (需新增), index.html, src/ 的完整專案推送到 GitHub/GitLab。
+Vercel Project Setup：
+Import Repository。
+Framework Preset 選擇 Vite。
+Build Command: npm run build (確保 package.json 有 build script: tsc && vite build)。
+Output Directory: dist。
+設定環境變數：在 Vercel Project Settings > Environment Variables 填入上述的 API Keys。
+Deploy：點擊 Deploy。
+7. 後台功能說明 (Admin Manual)
+網站內建一個強大的 CMS 系統，供營運人員使用。
+進入方式：
+電腦版：點擊 Footer 版權宣告區塊中的「統一編號」文字連續 5次。
+或直接輸入網址 /#/admin (HashRouter) 或 /admin (BrowserRouter)。
+預設登入密碼：hamu888 (請在生產環境代碼中修改此驗證邏輯，建議改用 Supabase Auth)。
+功能模組：
+營運儀表板：查看營收概況、待處理訂單。
+訂單管理：更改訂單狀態 (待處理 -> 處理中 -> 完成)。
+商品中心：上傳商品、AI 自動生成描述、AI 自動生成 SEO 標籤。
+工坊管理：新增/修改 DIY 床墊的材料 (表布、彈簧、泡棉) 與價格。
+風格轉換器：上傳實拍照片，透過 Gemini Pro Vision 轉換為「動森風格」宣傳圖。
+日誌中心：撰寫部落格，支援 AI 靈感撰寫 (自動生成符合 SEO 的衛教文章)。
+系統設定：設定首頁公告、隨機氣球活動 (Balloon Event) 的優惠碼。
+8. 結語與交接注意事項
+Gemini API 配額：目前的 AI 功能依賴 Gemini API。請留意 Google Cloud Console 的配額使用量，建議設定 Billing Alert。
+Line 整合：結帳流程目前是產生 Deep Link 跳轉至 Line。若需自動化推播，需另外串接 Line Messaging API Webhook 到 Supabase Edge Functions。
+行動版優化：目前 CSS 已針對 iOS Safari 的 Safe Area 進行優化，但在修改 Layout 時請務必檢查 bottom-24 等針對 Bottom Navigation 的推移設定。
+這是一個充滿愛與創意的專案，祝您在海姆島的開發旅程愉快！ 🏝️🐹💤
